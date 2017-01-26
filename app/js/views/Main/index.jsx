@@ -61,6 +61,7 @@ class Main extends Component {
     const fillOrKill = false; // Don't know what this one is used for, but from the wallet, "false" value is always used
     const feeId = '1.3.0'; // Just use core token to pay the fee
 
+    // Make transaction
     const tr = new TransactionBuilder();
     tr.add_type_operation('limit_order_create', {
       fee: {
@@ -81,20 +82,6 @@ class Main extends Component {
       feeId,
     });
     this._processTransaction(tr);
-  }
-
-  _getFee(asset) {
-    let fee = utils.estimateFee("limit_order_create", [], ChainStore.getObject("2.0.0")) || 0;
-
-    if (!asset || asset.get("id") === "1.3.0") return fee;
-    let cer = asset.getIn(["options", "core_exchange_rate"]).toJS();
-    let coreAsset = ChainStore.getAsset("1.3.0");
-    if (!coreAsset) return 0;
-    let price = utils.convertPrice(coreAsset, cer, null, asset.get("id"));
-
-    let eqValue = utils.convertValue(price, fee, coreAsset, asset);
-
-    return Math.floor(eqValue + 0.5);
   }
 
   render() {
