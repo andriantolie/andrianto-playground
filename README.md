@@ -15,10 +15,12 @@ This is a simple project using React that tries to interact with bitshares block
 All of the output can be seen using Chrome Developer Tools' console
 
 ## To run the project
+Make sure no other things occupying port 8080
 ```
 npm install
-npm start
+npm run dev
 ```
+Open browser and go to localhost:8080
 
 ## Business logic of creating and broadcasting transaction:
 
