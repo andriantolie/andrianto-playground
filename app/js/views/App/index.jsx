@@ -5,11 +5,11 @@ class App extends Component {
     const { children } = this.props;
     return (
       <div className='App'>
-        <div>HEADER</div>
+        <div><b>HEADER</b></div>
         <div>------------------------</div>
         { children }
         <div>------------------------</div>
-        <div>FOOTER</div>
+        <div><b>FOOTER</b></div>
       </div>
     );
   }

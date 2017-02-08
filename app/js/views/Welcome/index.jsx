@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import { Apis } from 'graphenejs-ws';
 import { ChainStore } from 'graphenejs-lib';
 
-class Home extends Component {
+class Welcome extends Component {
   constructor(props) {
     super(props);
-    this.connectToBlockchain = this.connectToBlockchain.bind(this);
+    this._connectToBlockchain = this._connectToBlockchain.bind(this);
     this.state = {
       connectingToBlockchain: false,
       connectedToBlockchain: false,
     };
   }
 
-  connectToBlockchain() {
+  _connectToBlockchain() {
     // Mark connecting to blockchain
     this.setState({ connectingToBlockchain: true });
     // Open websocket connection
@@ -41,8 +41,8 @@ class Home extends Component {
   render() {
     return (
       <div className='Home'>
-        <button onClick={this.connectToBlockchain} disabled={this.state.connectingToBlockchain}>
-            Connect to Blockchain hehehe
+        <button onClick={ this._connectToBlockchain } disabled={ this.state.connectingToBlockchain }>
+          {'Connect to Blockchain'}
         </button>
         {
           this.state.connectingToBlockchain ?
@@ -54,8 +54,8 @@ class Home extends Component {
   }
 }
 
-Home.contextTypes = {
+Welcome.contextTypes = {
   router: React.PropTypes.object,
 };
 
-export default Home;
+export default Welcome;
