@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { ChainStore, TransactionBuilder, PrivateKey } from 'graphenejs-lib';
+import { Apis } from 'graphenejs-ws';
 import utils from '../../utils';
 
 class Main extends Component {
@@ -12,7 +13,11 @@ class Main extends Component {
       orderCancelInProgressList: [],
       makeOpenOrderInProgress: false,
       fetchRecentHistoryInProgress: false,
+      connectingToBlockchain: false,
+      connectedToBlockchain: false,
     };
+
+    this._connectToBlockchain = this._connectToBlockchain.bind(this);
     this._makeOpenOrder = this._makeOpenOrder.bind(this);
     this._onObjectIdTextInputChange = this._onObjectIdTextInputChange.bind(this);
     this._getObject = this._getObject.bind(this);
@@ -28,6 +33,31 @@ class Main extends Component {
     const object = ChainStore.getObject('2.1.0');
     // Not connected to blockchain, go back to welcome page
     if (!object) this.context.router.push('/');
+  }
+
+  _connectToBlockchain() {
+    // Mark connecting to blockchain
+    this.setState({ connectingToBlockchain: true });
+    // Open websocket connection
+    Apis.instance('wss://bitshares.openledger.info/ws', true).init_promise.then((res) => {
+      console.log('Connected to:', res[0].network);
+      // Init chainstore
+      ChainStore.init().then(() => {
+        // Mark connected to blockchain
+        this.setState({ connectingToBlockchain: false, connectedToBlockchain: true });
+        console.log('Chainstore init success');
+        return null;
+      }).catch((error) => {
+        console.log('Fail to init ChainStore');
+        console.error(error);
+        this.setState({ connectingToBlockchain: false });
+      });
+      return null;
+    }).catch((error) => {
+      console.log('Fail to connect to blockchain');
+      console.error(error);
+      this.setState({ connectingToBlockchain: false });
+    });
   }
 
   _getObject() {
@@ -256,9 +286,24 @@ class Main extends Component {
     return null;
   }
 
-  render() {
+  _renderConnectToBlockchainPage() {
     return (
-      <div className='Main'>
+      <div>
+        <button onClick={ this._connectToBlockchain } disabled={ this.state.connectingToBlockchain }>
+            {'Connect to Blockchain'}
+        </button>
+        {
+          this.state.connectingToBlockchain ?
+            <div>{'Connecting to Blockchain..... Please wait....'}</div>
+            : null
+        }
+      </div>
+    );
+  }
+
+  _renderMainPage() {
+    return (
+      <div>
         <div>
           {'Welcome To Blockchain! Use your Chrome Developer Tools\' Console to see the output'}
         </div>
@@ -308,6 +353,14 @@ class Main extends Component {
     );
   }
 
+  render() {
+    const isConnectedToBlockchain = this.state.connectedToBlockchain;
+    if (isConnectedToBlockchain) {
+      return this._renderMainPage();
+    } else {
+      return this._renderConnectToBlockchainPage();
+    }
+  }
 }
 
 Main.contextTypes = {

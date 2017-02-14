@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --content-base . --history-api-fallback"
+    "dev": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 3001 --inline --content-base . --history-api-fallback"
   },
   "author": "",
   "license": "ISC",
